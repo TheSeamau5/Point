@@ -8,6 +8,7 @@ Point
 
 Create a Point
 
+    p : Point
     p = { x = 1 , y = 2 }
     
 ##### You can perform operations on points
