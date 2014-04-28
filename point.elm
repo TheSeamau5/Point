@@ -1,71 +1,67 @@
--- Point type to represent a 2D point / vector
-type Point = {x : Float, y : Float}
+-- 2D Extensible Point Type
+type Point a = { a | x : Float , y : Float }
 
-origin : Point
-origin = { x = 0 , y = 0 }
+-- Basic constructor for point type
+point : Float -> Float -> Point {}
+point x y = { x = x , y = y }
 
-xUnit : Point 
-xUnit = { x = 1, y = 0 }
+-- Convert a record with x and y fields set to Int
+-- to a similar record with fields set to Float 
+toFloatPoint : { a | x : Int , y : Int } -> Point a
+toFloatPoint p = { p | x <- toFloat p.x , y <- toFloat p.y }
 
-yUnit : Point
-yUnit = { x = 0, y = 1 }
+-- The Point { x = 0 , y = 0 }
+origin : Point {}
+origin = point 0 0
 
--- Vector Addition
-(<+>) : Point -> Point -> Point
-v <+> w = { x = v.x + w.x , y = v.y + w.y }
+-- The Point { x = 1 , y = 0 }
+xUnit : Point {}
+xUnit = point 1 0
 
--- Vector Subtraction
-(<->) : Point -> Point -> Point
-v <-> w = { x = v.x - w.x , y = v.y - w.y }
+-- The Point { x = 0 , y = 1 }
+yUnit : Point {}
+yUnit = point 0 1
 
--- Vector Multiplication
-(<*>) : Point -> Point -> Point
-v <*> w = { x = v.x * w.x , y = v.y * w.y }
+-- Function to add two points
+(<+>) : Point a -> Point b -> Point b
+p <+> q = { q | x <- p.x + q.x , y <- p.y + q.y }
 
--- Vector Division
-(</>) : Point -> Point -> Point
-v </> w = { x = v.x / w.x , y = v.y / w.y }
+-- Function to subtract two points
+(<->) : Point a -> Point b -> Point b
+p <-> q = { q | x <- p.x - q.y , y <- p.y - q.y }
 
--- Dot Multiplication
-(<.>) : Point -> Point -> number
-v <.> w = v.x * w.x + v.y * w.y
+-- Function to multiply two points
+(<*>) : Point a -> Point b -> Point b
+p <*> q = { q | x <- p.x * q.y , y <- p.y * q.y }
+
+-- Function to divide two points
+(</>) : Point a -> Point b -> Point b
+p </> q = { q | x <- p.x / q.y , y <- p.y / q.y }
+
+-- Function to calculate the dot product of two points
+(<.>) : Point a -> Point b -> Float
+p <.> q = p.x * q.x + p.y * q.y
 
 -- p-norm of a Point
-norm : number -> Point -> number
+norm : number -> Point a -> number
 norm n v = ((v.x ^ n) + (v.y ^ n)) ^ (1 / n)
 
 -- manhattan / taxicab norm
-manhattanNorm : Point -> number
+manhattanNorm : Point a -> number
 manhattanNorm v = abs(v.x) + abs(v.y)
 
 -- length / magnitude of a vector
-length : Point -> number
+length : Point a -> number
 length = norm 2
 
 -- scalar multiplication
-scaleBy : number -> Point -> Point
-scaleBy n v = { x = v.x * n , y = v.y * n }
+scaleBy : number -> Point a -> Point a
+scaleBy n v = point (v.x * n) (v.y * n)
 
 -- distance between two points
-distance : Point -> Point -> number
+distance : Point a -> Point b -> number
 distance p q = length (p <-> q)
 
 -- manhattan / taxicab distance between two points
-manhattanDistance : Point -> Point -> number
+manhattanDistance : Point a -> Point b -> number
 manhattanDistance p q = manhattanNorm (p <-> q)
-
-
-
-
-
-
-
--- TEST CODE
-
-
-a = { x = 1 , y = 2 }
-
-b = { x = 3 , y = 1 }
-
-
-main = asText (a <+> b)
